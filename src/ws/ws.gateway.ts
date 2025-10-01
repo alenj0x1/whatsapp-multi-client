@@ -16,11 +16,21 @@ export class WsGateway implements OnGatewayConnection {
 
   async handleConnection(client: Socket, ...args: any[]) {
     const apiKey = client.handshake.query.apiKey as string | undefined;
+    const address = client.handshake.address;
+
+    if (this.wsService.validateAddress(address)) {
+      client.disconnect();
+      Logger.error(
+        `Client ${client.id} disconnected, not allowed address`,
+        'ClientWebsocketConnection',
+      );
+      return;
+    }
 
     if (!apiKey) {
       client.disconnect();
       Logger.error(
-        `Client ${client.id} disconnected by missing query api key`,
+        `Client ${client.id} disconnected, missing query api key`,
         'ClientWebsocketConnection',
       );
       return;
@@ -29,7 +39,7 @@ export class WsGateway implements OnGatewayConnection {
     if (!(await this.wsService.validateApiKey(apiKey))) {
       client.disconnect();
       Logger.error(
-        `Client ${client.id} disconnected by not exists or expired api key`,
+        `Client ${client.id} disconnected, not exists or expired api key`,
         'ClientWebsocketConnection',
       );
       return;
