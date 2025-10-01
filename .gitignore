@@ -1,5 +1,7 @@
 # whatsapp sessions
 /.wwebjs_auth
+/.wwebjs_cache
+/clients
 
 # compiled output
 /dist

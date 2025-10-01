@@ -1,55 +1,20 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  ParseBoolPipe,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
 import { ManagerService } from './manager.service';
-import { ManagerSubscribeRequestDto } from 'src/dtos/requests/manager/manager-subscribe-request.dto';
+import { ClientCreateRequestDto } from 'src/dtos/requests/clients/client-create-request.dto';
+import { ClientUpdateRequestDto } from 'src/dtos/requests/clients/client-update-request.dto';
 
 @Controller('manager')
 export class ManagerController {
   constructor(private readonly managerService: ManagerService) {}
 
   @Post('create/:id')
-  create(@Param('id') id: string) {
-    return this.managerService.create(id);
+  create(@Param('id') id: string, @Body() payload: ClientCreateRequestDto) {
+    return this.managerService.create(id, payload);
   }
 
-  @Get('state/:id')
-  state(@Param('id') id: string) {
-    return this.managerService.state(id);
-  }
-
-  @Put('subscribe/:id')
-  subscribe(
-    @Param('id') id: string,
-    @Body() payload: ManagerSubscribeRequestDto,
-  ) {
-    return this.managerService.subscribe(id, payload);
-  }
-
-  @Put('unsubscribe/:id')
-  unsubscribe(
-    @Param('id') id: string,
-    @Body() payload: ManagerSubscribeRequestDto,
-  ) {
-    return this.managerService.subscribe(id, payload);
-  }
-
-  @Put('init/:id')
-  init(@Param('id') id: string) {
-    return this.managerService.init(id);
-  }
-
-  @Put('disconnect/:id')
-  disconnect(@Param('id') id: string) {
-    return this.managerService.disconnect(id);
+  @Put('update/:id')
+  update(@Param('id') id: string, @Body() payload: ClientUpdateRequestDto) {
+    return this.managerService.update(id, payload);
   }
 
   @Put('logout/:id')

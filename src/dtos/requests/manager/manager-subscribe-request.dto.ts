@@ -1,9 +1,9 @@
 import { IsArray, IsEnum, IsNotEmpty } from 'class-validator';
-import { ClientEvent } from 'src/enums/client-event.enum';
+import { Events } from 'whatsapp-web.js';
 
 export class ManagerSubscribeRequestDto {
   @IsArray()
   @IsNotEmpty({ each: true })
-  @IsEnum(ClientEvent, { each: true })
+  @IsEnum(Events, { each: true })
   events: string[];
 }

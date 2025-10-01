@@ -1,13 +1,25 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { ManagerSubscribeRequestDto } from 'src/dtos/requests/manager/manager-subscribe-request.dto';
-import { ClientsService } from 'src/services/clients/clients.service';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { ClientsService } from 'src/clients/clients.service';
+import { ClientCreateRequestDto } from 'src/dtos/requests/clients/client-create-request.dto';
+import { ClientUpdateRequestDto } from 'src/dtos/requests/clients/client-update-request.dto';
+import { MessageSendRequestDto } from 'src/dtos/requests/messages/message-send-request.dto';
+import { QueueStatus } from 'src/enums/queue-status.enum';
+import { PrismaMongoService } from 'src/services/prisma-mongo/prisma-mongo.service';
 
 @Injectable()
 export class ManagerService {
-  constructor(private readonly clients: ClientsService) {}
+  constructor(
+    private readonly clients: ClientsService,
+    private readonly mgdb: PrismaMongoService,
+  ) {}
 
-  async create(id: string) {
-    const client = await this.clients.create(id);
+  async create(id: string, payload: ClientCreateRequestDto) {
+    const client = await this.clients.create(id, payload);
     if (!client) {
       return new BadRequestException('El cliente fue previamente creado');
     }
@@ -15,31 +27,13 @@ export class ManagerService {
     return id;
   }
 
-  async init(id: string) {
-    const client = this.getClient(id);
-    await client.initialize();
+  async update(id: string, payload: ClientUpdateRequestDto) {
+    const client = await this.clients.update(id, payload);
+    if (!client) {
+      return new BadRequestException('El cliente no existe');
+    }
 
-    return true;
-  }
-
-  subscribe(id: string, payload: ManagerSubscribeRequestDto) {
-    this.getClient(id);
-    return this.clients.subscribe(id, payload.events);
-  }
-
-  unsubscribe(id: string, payload: ManagerSubscribeRequestDto) {
-    this.getClient(id);
-    return this.clients.unsubscribe(id, payload.events);
-  }
-
-  async state(id: string) {
-    this.getClient(id);
-    return await this.clients.state(id);
-  }
-
-  disconnect(id: string) {
-    this.getClient(id);
-    return this.clients.disconnect(id);
+    return id;
   }
 
   logout(id: string) {

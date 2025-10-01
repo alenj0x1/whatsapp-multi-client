@@ -1,0 +1,33 @@
+#clients-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  min-width: 100vw;
+}
+
+.client {
+  display: flex;
+  gap: 4px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.24);
+  border-radius: 7px;
+}
+
+.client-name {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.status {
+  font-size: 0.8rem;
+}
+
+.status-disconnected {
+  color: rgb(126, 3, 3);
+}
+
+.status-connected {
+  color: rgb(16, 124, 16);
+}
